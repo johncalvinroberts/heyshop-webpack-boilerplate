@@ -1,6 +1,7 @@
 const webpack = require('webpack')
 const path = require('path')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 const nodeEnv = process.env.NODE_ENV || 'production'
 
 
@@ -11,9 +12,9 @@ const config = {
     shopfront: './src/shopfront.js'
   },
   output: {
-    path: __dirname + "/dist",
+    path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
-    publicPath: 'dist/'
+    publicPath: '/dist/'
   },
   module: {
     loaders: [
@@ -26,13 +27,19 @@ const config = {
   },
   plugins: [
     // env plugin
+    new CleanWebpackPlugin(['dist']),
     new webpack.DefinePlugin({
       'proccess.env': { NODE_ENV: JSON.stringify(nodeEnv)}
-    })
+    }),
+    // HMR plugins
+    new webpack.NamedModulesPlugin(),
+    // new webpack.HotModuleReplacementPlugin()
   ],
   devServer:{
-    contentBase: path.resolve(__dirname, './dist'),
-    open: true
+    contentBase: path.join(__dirname, 'assets'),
+    publicPath: 'http://localhost:400/dist/', //bundles go here
+    // hot: true,
+    port: 4000
   },
   devtool: 'eval-source-map'
 }

@@ -18,6 +18,14 @@ const engineers = [
     language: 'php'
   },
   {
+    name: '旺财',
+    language: 'php'
+  },
+  {
+    name: '旺财',
+    language: 'php'
+  },
+  {
     name: '大黄',
     language: 'ruby'
   }
