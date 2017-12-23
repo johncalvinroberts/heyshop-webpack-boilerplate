@@ -1,8 +1,10 @@
 const webpack = require('webpack')
+const path = require('path')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
-const nodeEnv = process.env.NODE_ENV || 'production';
+const nodeEnv = process.env.NODE_ENV || 'production'
 
-module.exports = {
+
+const config = {
   devtool: 'source-map',
   entry: {
     checkout: './src/checkout.js',
@@ -10,28 +12,35 @@ module.exports = {
   },
   output: {
     path: __dirname + "/dist",
-    filename: '[name].js'
+    filename: '[name].js',
+    publicPath: 'dist/'
   },
   module: {
     loaders: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel-loader',
-        query: {
-          presets: ['env']
-        }
+        loader: 'babel-loader'
       }
     ]
   },
   plugins: [
-    // uglify js
-    new UglifyJsPlugin({
-      sourceMap: true
-    }),
     // env plugin
     new webpack.DefinePlugin({
       'proccess.env': { NODE_ENV: JSON.stringify(nodeEnv)}
     })
-  ]
+  ],
+  devServer:{
+    contentBase: path.resolve(__dirname, './dist'),
+    open: true
+  },
+  devtool: 'eval-source-map'
+}
+
+module.exports = config
+
+if (process.env.NODE_ENV === 'production') {
+  module.exports.plugins.push(
+    new webpack.optimize.UglifyJsPlugin()
+  )
 }
